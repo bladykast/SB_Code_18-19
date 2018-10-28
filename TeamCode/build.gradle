@@ -10,3 +10,9 @@
 // Custom definitions may go here
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+android {
+    compileSdkVersion 23
+    buildToolsVersion '28.0.0 rc1'
+}
+dependencies {
+}
