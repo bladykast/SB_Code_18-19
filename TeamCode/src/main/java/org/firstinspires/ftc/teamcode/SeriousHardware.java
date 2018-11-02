@@ -29,22 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
-<<<<<<< HEAD
-import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
-=======
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareMap;
->>>>>>> 4b2771d4442f8893bd1290c537de7f2136e4c795
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -54,18 +43,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class SeriousHardware
 {
-
-<<<<<<< HEAD
-    public DcMotor DriveLeft, PTOLeft, DriveRight, PTORight = null;
-    public Servo hang = null;
-    public BNO055IMU imu = null;
-    public DigitalChannel digitalTouch = null;
-
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-=======
+
     //Declarations
     public DcMotor DriveRight, PTOLeft, DriveLeft, PTORight, RotateArm, ExtendArm, Intake = null;
     public Servo shifter, hang = null;
@@ -92,12 +74,6 @@ public class SeriousHardware
     public static double ArmKD = 1;
 
 
-
-
-    HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
-
->>>>>>> 4b2771d4442f8893bd1290c537de7f2136e4c795
     public SeriousHardware() {
     }
 
@@ -106,26 +82,6 @@ public class SeriousHardware
         // Save reference to Hardware map
         hwMap = ahwMap;
 
-<<<<<<< HEAD
-        PTOLeft = hwMap.dcMotor.get("PTOL");
-        DriveLeft = hwMap.dcMotor.get("DL");
-        PTORight = hwMap.dcMotor.get("PTOR");
-        DriveRight = hwMap.dcMotor.get("DR");
-
-        hang = hwMap.servo.get("HNG");
-        
-
-        DriveRight.setDirection(DcMotor.Direction.FORWARD);
-        PTORight.setDirection(DcMotor.Direction.FORWARD);
-        DriveLeft.setDirection(DcMotor.Direction.REVERSE);
-        PTOLeft.setDirection(DcMotor.Direction.REVERSE);
-
-        PTOLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        PTORight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        DriveRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        DriveLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-=======
         //Motors
         DriveLeft = hwMap.get(DcMotor.class, "DL");
         DriveRight = hwMap.get(DcMotor.class, "DR");
@@ -156,7 +112,6 @@ public class SeriousHardware
 
 
         //Servo Positions
->>>>>>> 4b2771d4442f8893bd1290c537de7f2136e4c795
         hang.setPosition(0);
 
 

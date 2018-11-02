@@ -10,15 +10,3 @@
 // Custom definitions may go here
 // Include common definitions from above.
 apply from: '../build.common.gradle'
-<<<<<<< HEAD
-android {
-    compileSdkVersion 23
-    buildToolsVersion '28.0.0 rc1'
-}
-dependencies {
-=======
-dependencies {
-    implementation project(':endercv')
-    implementation project(':openCVLibrary3')
->>>>>>> 4b2771d4442f8893bd1290c537de7f2136e4c795
-}
