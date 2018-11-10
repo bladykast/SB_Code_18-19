@@ -30,7 +30,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -48,9 +50,18 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "TensorFlow Object Detection", group = "TeleOp")
+@Autonomous(name = "PICK ME Crater?)", group = "Autonomous")
 
 public class TensorFlowObjectDetection extends LinearOpMode {
+
+    SeriousHardware robot  = new SeriousHardware();
+    private ElapsedTime runtime = new ElapsedTime();
+
+    double DLP;
+    double DRP;
+
+    public String Location;
+
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -85,6 +96,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
+
+        robot.init(hardwareMap);
+
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -104,7 +118,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                 tfod.activate();
             }
 
-            while (opModeIsActive()) {
+
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 3)) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -127,10 +143,13 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                         if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                           if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Left");
+                            Location = "Left";
                           } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Right");
+                            Location = "Right";
                           } else {
                             telemetry.addData("Gold Mineral Position", "Center");
+                            Location = "Center";
                           }
                         }
                       }
@@ -140,8 +159,33 @@ public class TensorFlowObjectDetection extends LinearOpMode {
             }
         }
 
+        runtime.reset();
+
         if (tfod != null) {
             tfod.shutdown();
+
+        sleep(2000);
+
+        if (Location == "Right"){
+            Turn(0.5,-0.5);
+            sleep(500);
+        }
+
+        else if (Location == "Left"){
+            Turn(0.5,-0.5);
+            sleep(500);
+        }
+
+        else sleep(2000);
+
+        GoForward(0.75);
+
+        sleep(1200);
+
+        Stop();
+
+        sleep(15000);
+
         }
     }
 
@@ -173,4 +217,36 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
+
+    public void GoForward(double power) {
+        robot.DriveLeft.setPower(power);
+        robot.DriveRight.setPower(power);
+    }
+
+    public void GoBackward(double power) {
+        GoForward(-power);
+    }
+
+    public void Drop() {
+        robot.PTOLeft.setTargetPosition(-10);
+        robot.PTORight.setTargetPosition(-10);
+
+    }
+
+    public void Stop() {
+        robot.PTORight.setPower(0);
+        robot.PTOLeft.setPower(0);
+        robot.DriveLeft.setPower(0);
+        robot.DriveRight.setPower(0);
+    }
+
+    public void Turn(double DLP, double DRP) {
+
+        robot.DriveLeft.setPower(DLP);
+        robot.DriveRight.setPower(DRP);
+    }
+
 }
+
+//* Thomas oh my god fix the f&*$#%@ code
+//* Thomas you are doing a good job please keep trying you got this! :) also who ever threw that paper your mom is a hoe

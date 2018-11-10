@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
@@ -16,16 +17,20 @@ import static org.firstinspires.ftc.teamcode.SeriousHardware.MOTOR_SPEED;
 import static org.firstinspires.ftc.teamcode.SeriousHardware.PTO_Servo_Drive;
 import static org.firstinspires.ftc.teamcode.SeriousHardware.PTO_Servo_Hang;
 
+@TeleOp(name="3736 TeleOp", group="TeleOp")
 public class TeleOp_Comp extends OpMode {
 
     //PTO Speeds
     public double PTOL_SPEED;
     public double PTOR_SPEED;
 
+    double HangPos;
+
     public boolean slow = true;
 
     boolean PTO_Hang;
     boolean PTO_Drive;
+
 
     // Encoder Variables
     static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;    // eg: TETRIX Motor Encoder
@@ -59,6 +64,9 @@ public class TeleOp_Comp extends OpMode {
 
         robot.hang.setPosition(HANG_OPEN);
         robot.shifter.setPosition(PTO_Servo_Drive);
+
+        PTO_Hang = true;
+        PTO_Drive = false;
     }
 
     public void loop()
@@ -104,15 +112,15 @@ public class TeleOp_Comp extends OpMode {
         robot.PTOLeft.setPower(PTOL_SPEED);
         robot.PTORight.setPower(PTOR_SPEED);
 
-        if (PTO_Drive = true) {
+        if (PTO_Drive == true) {
             robot.shifter.setPosition(PTO_Servo_Drive);
             PTOL_SPEED = y1 * MOTOR_SPEED;
             PTOR_SPEED = y2 * MOTOR_SPEED;
     }
-        else if (PTO_Hang = true) {
+        else if (PTO_Hang == true) {
             robot.shifter.setPosition(PTO_Servo_Hang);
-            PTOL_SPEED = y3;
-            PTOR_SPEED = y3;
+            PTOL_SPEED = (y3 * 0.6);
+            PTOR_SPEED = (y3 * 0.6);
         }
 
 
@@ -120,14 +128,23 @@ public class TeleOp_Comp extends OpMode {
 
 
         //Gamepad 2
+        if (gamepad2.x) {
+            HangPos = 1;
+        }
+        else if (gamepad2.a) {
+            HangPos = 0;
+        }
+
+
         armPosition = Range.scale(gamepad2.right_trigger, 0, 1, 0, 5000);
         armPositionInt = (int) armPosition;
         robot.RotateArm.setTargetPosition(armPositionInt);
 
+        robot.hang.setPosition(HangPos);
 
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("Motor Speed", "Speed:  " + String.format("%.2f", MOTOR_SPEED));
-        telemetry.addData("Arm Position", "Position:" + String.format("%.2f", robot.RotateArm.getCurrentPosition()));
+        telemetry.addData("Arm Position", "Position:  " + String.format("%d", robot.RotateArm.getCurrentPosition()));
         telemetry.update();
     }
 
@@ -138,3 +155,5 @@ public class TeleOp_Comp extends OpMode {
     }
 
 }
+//* if you ate a bag of dicks your breath would smell better
+//* also your face looks like it got hit with a train then your mom decided to try and help you by sitting on your face 

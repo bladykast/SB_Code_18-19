@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -50,7 +51,7 @@ public class SeriousHardware
 
     //Declarations
     public DcMotor DriveRight, PTOLeft, DriveLeft, PTORight, RotateArm, ExtendArm, Intake = null;
-    public Servo shifter, hang = null;
+    public Servo shifter, hang, dump, brake;
     public BNO055IMU imu = null;
     public DigitalChannel digitalTouch = null;
 
@@ -93,6 +94,8 @@ public class SeriousHardware
 
         //Servos, CR Servos & EDR 393s
         hang = hwMap.get(Servo.class, "HNG");
+        shifter = hwMap.get(Servo.class, "SHIFT");
+        //dump = hwMap.servo.get("DUMP");
 
         //Sensors
         digitalTouch = hwMap.get(DigitalChannel.class, "Touch");
@@ -100,10 +103,10 @@ public class SeriousHardware
 
 
         //Motor Configuration
-        DriveLeft.setDirection(DcMotor.Direction.FORWARD);
-        DriveRight.setDirection(DcMotor.Direction.REVERSE);
-        PTOLeft.setDirection(DcMotor.Direction.REVERSE);
-        PTORight.setDirection(DcMotor.Direction.FORWARD);
+        DriveLeft.setDirection(DcMotor.Direction.REVERSE);
+        DriveRight.setDirection(DcMotor.Direction.FORWARD);
+        PTOLeft.setDirection(DcMotor.Direction.FORWARD);
+        PTORight.setDirection(DcMotor.Direction.REVERSE);
 
         DriveLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         DriveRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -112,7 +115,7 @@ public class SeriousHardware
 
 
         //Servo Positions
-        hang.setPosition(0);
+        hang.setPosition(HANG_CLOSED);
 
 
     }
