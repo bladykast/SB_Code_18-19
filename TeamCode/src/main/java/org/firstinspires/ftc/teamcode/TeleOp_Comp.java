@@ -27,20 +27,24 @@ public class TeleOp_Comp extends OpMode {
     double HangPos;
 
     public boolean slow = true;
+    public boolean reverse = false;
 
     boolean PTO_Hang;
     boolean PTO_Drive;
 
 
     // Encoder Variables
-    static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = .682 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 6.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+   // static final double     COUNTS_PER_MOTOR_REV    = 537.6 ;    // eg: TETRIX Motor Encoder
+   // static final double     DRIVE_GEAR_REDUCTION    = .682 ;     // This is < 1.0 if geared UP
+   // static final double     WHEEL_DIAMETER_INCHES   = 6.0 ;     // For figuring circumference
+   // static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    //        (WHEEL_DIAMETER_INCHES * 3.1415);
 
     public double armPosition;
     public int armPositionInt;
+
+    public double armPositionDelta;
+
 
     SeriousHardware robot = new SeriousHardware();
 
@@ -53,13 +57,19 @@ public class TeleOp_Comp extends OpMode {
         robot.PTOLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.PTORight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RotateArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.ExtendArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.ExtendArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.DriveLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.DriveRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.PTOLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.PTORight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RotateArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RotateArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.ExtendArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.ExtendArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        robot.RotateArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.PTOLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.RotateArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         robot.hang.setPosition(HANG_OPEN);
@@ -103,21 +113,35 @@ public class TeleOp_Comp extends OpMode {
         if (slow) MOTOR_SPEED = MIN_SPEED;
         if (!slow) MOTOR_SPEED = MAX_SPEED;
 
+         //Reverser Lander Code
 
-        //Drivetrain Code
-        PTO_Hang = !PTO_Drive;
+        if (gamepad1.b) {
+            reverse = true;
+        }
+        else if (gamepad1.y) {
+            reverse = false;
+        }
 
-        robot.DriveLeft.setPower(y1 * MOTOR_SPEED);
-        robot.DriveRight.setPower(y2 * MOTOR_SPEED);
+        if (reverse){
+            robot.DriveLeft.setPower(-y2 * MOTOR_SPEED);
+            robot.DriveRight.setPower(-y1 * MOTOR_SPEED);
+        }
+        else {
+            robot.DriveLeft.setPower(y1 * MOTOR_SPEED);
+            robot.DriveRight.setPower(y2 * MOTOR_SPEED);
+        }
+
         robot.PTOLeft.setPower(PTOL_SPEED);
         robot.PTORight.setPower(PTOR_SPEED);
+
+        //Drivetrain Code
 
         if (PTO_Drive == true) {
             robot.shifter.setPosition(PTO_Servo_Drive);
             PTOL_SPEED = y1 * MOTOR_SPEED;
             PTOR_SPEED = y2 * MOTOR_SPEED;
     }
-        else if (PTO_Hang == true) {
+        else if (PTO_Drive == false) {
             robot.shifter.setPosition(PTO_Servo_Hang);
             PTOL_SPEED = (y3 * 0.6);
             PTOR_SPEED = (y3 * 0.6);
@@ -127,24 +151,57 @@ public class TeleOp_Comp extends OpMode {
         //Gamepad 1
 
 
+        if (gamepad1.left_bumper) {
+            robot.Intake.setPower(-1);
+        } else if (gamepad1.right_bumper) {
+            robot.Intake.setPower(1);
+        } else {
+            robot.Intake.setPower(0);
+        }
+
         //Gamepad 2
         if (gamepad2.x) {
-            HangPos = 1;
+            HangPos = 0.7;
         }
         else if (gamepad2.a) {
             HangPos = 0;
         }
 
 
-        armPosition = Range.scale(gamepad2.right_trigger, 0, 1, 0, 5000);
+        if (gamepad1.dpad_down)
+        {
+            robot.ExtendArmLeft.setPower(1);
+            robot.ExtendArmRight.setPower(1);
+        }
+        else if (gamepad1.dpad_up)
+        {
+            robot.ExtendArmLeft.setPower(-1);
+            robot.ExtendArmRight.setPower(-1);
+        }
+        else
+        {
+            robot.ExtendArmLeft.setPower(0);
+            robot.ExtendArmRight.setPower(0);
+        }
+
+
+        //armPosition = Range.scale(gamepad2.right_trigger, 0, 1, 0, 5000);
+
+        armPositionDelta = y4 * 5;
+        armPosition += armPositionDelta;
         armPositionInt = (int) armPosition;
+
         robot.RotateArm.setTargetPosition(armPositionInt);
+        robot.RotateArm.setPower(0.7);
 
         robot.hang.setPosition(HangPos);
 
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("Motor Speed", "Speed:  " + String.format("%.2f", MOTOR_SPEED));
-        telemetry.addData("Arm Position", "Position:  " + String.format("%d", robot.RotateArm.getCurrentPosition()));
+        telemetry.addData("Arm Position", "Pos:  " + String.format("%d", armPositionInt));
+        telemetry.addData("Actual Position", "Position:  " + String.format("%d", robot.RotateArm.getCurrentPosition()));
+        telemetry.addData("PTO Position", "Position:  " + String.format("%d", robot.PTORight.getCurrentPosition()));
+        telemetry.addData("PTO Position", "Position:  " + String.format("%d", robot.PTOLeft.getCurrentPosition()));
         telemetry.update();
     }
 
@@ -155,5 +212,5 @@ public class TeleOp_Comp extends OpMode {
     }
 
 }
-//* if you ate a bag of dicks your breath would smell better
-//* also your face looks like it got hit with a train then your mom decided to try and help you by sitting on your face 
+//* ok
+

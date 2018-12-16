@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class ReallyBasicAuto extends LinearOpMode {
 
-    SeriousHardware robot  = new SeriousHardware();
+    SeriousHardware robot = new SeriousHardware();
 
     boolean Blue = true;
     boolean Red = false;
@@ -46,6 +46,12 @@ public class ReallyBasicAuto extends LinearOpMode {
         sleep(15000);
     }
 
+    public void Drop() {
+        robot.PTOLeft.setTargetPosition(-10);
+        robot.PTORight.setTargetPosition(-10);
+        robot.hang.setPosition(1);
+    }
+
     public void GoForward(double power) {
         robot.DriveLeft.setPower(power);
         robot.DriveRight.setPower(power);
@@ -53,12 +59,6 @@ public class ReallyBasicAuto extends LinearOpMode {
 
     public void GoBackward(double power) {
         GoForward(-power);
-    }
-
-    public void Drop() {
-        robot.PTOLeft.setTargetPosition(-10);
-        robot.PTORight.setTargetPosition(-10);
-
     }
 
 
@@ -70,3 +70,6 @@ public class ReallyBasicAuto extends LinearOpMode {
     }
 
 }
+
+//* ok, this is our auto code, can we pay someone to code our bot? -Matt
+//* why tho - Odin

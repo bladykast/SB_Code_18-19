@@ -42,15 +42,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * This is NOT an opmode.
  */
 
-public class SeriousHardware
-{
-    HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
+public class SeriousHardware {
+    HardwareMap hwMap = null;
+    private ElapsedTime period = new ElapsedTime();
 
     /* Constructor */
 
     //Declarations
-    public DcMotor DriveRight, PTOLeft, DriveLeft, PTORight, RotateArm, ExtendArm, Intake = null;
+    public DcMotor DriveRight, PTOLeft, DriveLeft, PTORight, RotateArm, ExtendArmLeft, ExtendArmRight, Intake = null;
     public Servo shifter, hang, dump, brake;
     public BNO055IMU imu = null;
     public DigitalChannel digitalTouch = null;
@@ -65,7 +64,7 @@ public class SeriousHardware
 
     //Servo Positions
     public static double HANG_CLOSED = 0;
-    public static double HANG_OPEN = 1;
+    public static double HANG_OPEN = 0.7;
     public static double PTO_Servo_Hang = 1;
     public static double PTO_Servo_Drive = 1;
 
@@ -89,13 +88,14 @@ public class SeriousHardware
         PTOLeft = hwMap.get(DcMotor.class, "PTOL");
         PTORight = hwMap.get(DcMotor.class, "PTOR");
         RotateArm = hwMap.get(DcMotor.class, "ARMROT");
-        ExtendArm = hwMap.get(DcMotor.class, "ARMEXT");
+        ExtendArmLeft = hwMap.get(DcMotor.class, "ARMEXTL");
+        ExtendArmRight = hwMap.get(DcMotor.class, "ARMEXTR");
         Intake = hwMap.get(DcMotor.class, "SWEEP");
 
         //Servos, CR Servos & EDR 393s
         hang = hwMap.get(Servo.class, "HNG");
         shifter = hwMap.get(Servo.class, "SHIFT");
-        //dump = hwMap.servo.get("DUMP");
+        dump = hwMap.servo.get("DUMP");
 
         //Sensors
         digitalTouch = hwMap.get(DigitalChannel.class, "Touch");
@@ -107,17 +107,25 @@ public class SeriousHardware
         DriveRight.setDirection(DcMotor.Direction.FORWARD);
         PTOLeft.setDirection(DcMotor.Direction.FORWARD);
         PTORight.setDirection(DcMotor.Direction.REVERSE);
+        ExtendArmLeft.setDirection(DcMotor.Direction.FORWARD);
+        ExtendArmRight.setDirection(DcMotor.Direction.REVERSE);
+        RotateArm.setDirection(DcMotor.Direction.REVERSE);
 
         DriveLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         DriveRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         PTOLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         PTORight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        ExtendArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        ExtendArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RotateArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
+        RotateArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PTORight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PTOLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Servo Positions
         hang.setPosition(HANG_CLOSED);
-
-
     }
 }
 

@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.List;
@@ -39,6 +40,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
+import static org.firstinspires.ftc.teamcode.SeriousHardware.HANG_OPEN;
 
 /**
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -50,7 +53,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "PICK ME Crater?)", group = "Autonomous")
+@Autonomous(name = "PICK ME - Crater?", group = "Autonomous")
 
 public class TensorFlowObjectDetection extends LinearOpMode {
 
@@ -126,34 +129,34 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      if (updatedRecognitions.size() == 3) {
-                        int goldMineralX = -1;
-                        int silverMineral1X = -1;
-                        int silverMineral2X = -1;
-                        for (Recognition recognition : updatedRecognitions) {
-                          if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                            goldMineralX = (int) recognition.getLeft();
-                          } else if (silverMineral1X == -1) {
-                            silverMineral1X = (int) recognition.getLeft();
-                          } else {
-                            silverMineral2X = (int) recognition.getLeft();
-                          }
+                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+                        if (updatedRecognitions.size() == 3) {
+                            int goldMineralX = -1;
+                            int silverMineral1X = -1;
+                            int silverMineral2X = -1;
+                            for (Recognition recognition : updatedRecognitions) {
+                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                    goldMineralX = (int) recognition.getLeft();
+                                } else if (silverMineral1X == -1) {
+                                    silverMineral1X = (int) recognition.getLeft();
+                                } else {
+                                    silverMineral2X = (int) recognition.getLeft();
+                                }
+                            }
+                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                                    telemetry.addData("Gold Mineral Position", "Left");
+                                    Location = "Left";
+                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                                    telemetry.addData("Gold Mineral Position", "Right");
+                                    Location = "Right";
+                                } else {
+                                    telemetry.addData("Gold Mineral Position", "Center");
+                                    Location = "Center";
+                                }
+                            }
                         }
-                        if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                          if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                            telemetry.addData("Gold Mineral Position", "Left");
-                            Location = "Left";
-                          } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                            telemetry.addData("Gold Mineral Position", "Right");
-                            Location = "Right";
-                          } else {
-                            telemetry.addData("Gold Mineral Position", "Center");
-                            Location = "Center";
-                          }
-                        }
-                      }
-                      telemetry.update();
+                        telemetry.update();
                     }
                 }
             }
@@ -161,36 +164,46 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
         runtime.reset();
 
-        if (tfod != null) {
-            tfod.shutdown();
+        if (tfod != null) tfod.shutdown();
+
+        robot.PTORight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.PTOLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        Drop();
+
+        Stop();
+
+        robot.hang.setPosition(HANG_OPEN);
 
         sleep(2000);
 
-        if (Location == "Right"){
-            Turn(0.5,-0.5);
+        if (Location == "Right") {
+            Turn(0.5, -0.5);
             sleep(500);
-        }
-
-        else if (Location == "Left"){
-            Turn(0.5,-0.5);
+        } else if (Location == "Left") {
+            Turn(0.5, -0.5);
             sleep(500);
-        }
-
-        else sleep(2000);
+        } else sleep(2000);
 
         GoForward(0.75);
 
-        sleep(1200);
+        sleep(600);
 
+        Stop();
+
+        robot.PTORight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.PTORight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
+        /**
+         * Initialize the Vuforia localization engine.
         Stop();
 
         sleep(15000);
 
         }
-    }
 
-    /**
-     * Initialize the Vuforia localization engine.
      */
     private void initVuforia() {
         /*
@@ -228,8 +241,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     }
 
     public void Drop() {
-        robot.PTOLeft.setTargetPosition(-10);
-        robot.PTORight.setTargetPosition(-10);
+        robot.PTOLeft.setPower(1);
+        robot.PTORight.setPower(1);
+        sleep(3000);
 
     }
 
