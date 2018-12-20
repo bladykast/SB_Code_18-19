@@ -1,4 +1,4 @@
-Depot Auto PsudoCode test
+Depot Auto PsudoCode
 
 int pwr=0.4													//4/10'ths of full speed to prevent belt/encoder skips
 
