@@ -29,17 +29,18 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.SeriousHardware.HANG_OPEN;
 
@@ -53,9 +54,9 @@ import static org.firstinspires.ftc.teamcode.SeriousHardware.HANG_OPEN;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Blue Crater", group = "Autonomous")
+@Autonomous(name = "Red Depot", group = "Autonomous")
 
-public class TensorFlowObjectDetection extends LinearOpMode {
+public class RedDepot extends LinearOpMode {
 
     SeriousHardware robot = new SeriousHardware();
     private ElapsedTime runtime = new ElapsedTime();
@@ -127,7 +128,6 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         sleep(500);
 
         //rotate arm up 45 degrees
-
 
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
@@ -234,7 +234,6 @@ public class TensorFlowObjectDetection extends LinearOpMode {
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = CameraDirection.BACK;
 
-
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
@@ -276,7 +275,6 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     }
 
     public void Turn(double DLP, double DRP) {
-
         robot.DriveLeft.setPower(DLP);
         robot.DriveRight.setPower(DRP);
     }

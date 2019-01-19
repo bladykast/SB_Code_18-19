@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -49,8 +50,9 @@ public class SeriousHardware {
     /* Constructor */
 
     //Declarations
-    public DcMotor DriveRight, PTOLeft, DriveLeft, PTORight, RotateArm, ExtendArmLeft, ExtendArmRight, Intake = null;
-    public Servo shifter, hang, dump, brake;
+    public DcMotor DriveRight, PTOLeft, DriveLeft, PTORight, RotateArm, ExtendArmLeft, ExtendArmRight = null;
+    public Servo shifter, hang, dump, rotl, rotr, brake;
+    public CRServo sweep;
     public BNO055IMU imu = null;
     public DigitalChannel digitalTouch = null;
 
@@ -63,8 +65,15 @@ public class SeriousHardware {
     public static double MOTOR_SPEED = 1;
 
     //Servo Positions
+    public static double ROTR_UP = 0;
+    public static double ROTR_DOWN = 0.4;
+    public static double ROTL_UP = 1;
+    public static double ROTL_DOWN = 0.6;
+
     public static double HANG_CLOSED = 0;
     public static double HANG_OPEN = 0.7;
+    public static double DUMP_CLOSED = 1;
+    public static double DUMP_OPEN = 0.5;
     public static double PTO_Servo_Hang = 1;
     public static double PTO_Servo_Drive = 1;
 
@@ -90,12 +99,15 @@ public class SeriousHardware {
         RotateArm = hwMap.get(DcMotor.class, "ARMROT");
         ExtendArmLeft = hwMap.get(DcMotor.class, "ARMEXTL");
         ExtendArmRight = hwMap.get(DcMotor.class, "ARMEXTR");
-        Intake = hwMap.get(DcMotor.class, "SWEEP");
 
         //Servos, CR Servos & EDR 393s
         hang = hwMap.get(Servo.class, "HNG");
         shifter = hwMap.get(Servo.class, "SHIFT");
         dump = hwMap.servo.get("DUMP");
+        rotl = hwMap.servo.get("ROTL");
+        rotr = hwMap.servo.get("ROTR");
+        sweep = hwMap.crservo.get("SWEEP");
+
 
         //Sensors
         digitalTouch = hwMap.get(DigitalChannel.class, "Touch");
@@ -107,8 +119,8 @@ public class SeriousHardware {
         DriveRight.setDirection(DcMotor.Direction.FORWARD);
         PTOLeft.setDirection(DcMotor.Direction.FORWARD);
         PTORight.setDirection(DcMotor.Direction.REVERSE);
-        ExtendArmLeft.setDirection(DcMotor.Direction.FORWARD);
-        ExtendArmRight.setDirection(DcMotor.Direction.REVERSE);
+        ExtendArmLeft.setDirection(DcMotor.Direction.REVERSE);
+        ExtendArmRight.setDirection(DcMotor.Direction.FORWARD);
         RotateArm.setDirection(DcMotor.Direction.REVERSE);
 
         DriveLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
