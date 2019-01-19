@@ -1,0 +1,73 @@
+Crater Auto PsudoCode
+
+int pwr=0.4													//4/10'ths of full speed to prevent belt/encoder skips
+
+setposition hang closed										//innitialize make hang latch on
+
+waitforstart
+
+sleep(2000)													//don't start too early + stress inducer
+
+land(power:1)												//8020 bar goes up with PTOL and PTOR over time
+sleep(time to drop)
+land(power:0)
+setposition hang open										//releases bot
+
+drivefwd(power:pwr, distance:4)								//makes clearance room of 4" to allow for 8020 to go down and intake rotate
+land(power:1)
+sleep(time to lower)
+land(power:0)
+
+intakeext(power:1, distance: 6)								//clears vision path for phone by moving intake box out of way
+intakerot(power:0.5, angle: 90)								//angle 90 will need to have full encoder+versa reduction calculated
+
+cv() samples center											//massive oversimplification
+
+if(sample == center || none){								//either center or none, run center
+	drivefwd(power:pwr, distance:to knock off block)		//32"
+	driveback(power:pwr, distance: to clear left block)		//8"
+	driverot(angle:90)										//90deg will need some serious help to be consistent without gyro
+	drivedwd(power:pwr, distance: to middle of side mat)	//50"
+
+elseif(sample == left){
+		drivefwd(power:pwr, distance: to clear center block)//4"
+		driverot(angle:90)									//turn towards left
+		drivefwd(power:pwr, distance: to left block)		//sqrt(12*12+12*12)=16.94"
+		driverot(angle:-90)									//turn towards block
+		drivefwd(power:pwr, distance: to knock off block)	//3"
+		driveback(power:pwr, distance: to knock off block)	//5"
+		driverot(angle:90)									//turns left
+		drivefwd(power:pwr, distance: to middle of side mat)//35"
+		}
+elseif(sample == right){										
+		driverot(angle:30)									//turn back to center
+		drivefwd(power:pwr, distance: to clear center block)//4"
+		driverot(angle:-90)									//turn towards right
+		drivefwd(power:pwr, distance: to right block)		//sqrt(12*12+12*12)=16.94"
+		driverot(angle:90)									//turn towards block
+		drivefwd(power:pwr, distance: to knock off block)	//3" 
+		driveback(power:pwr, distance: to knock off block)	//5"
+		driverot(angle:90)									//turns left
+		drivefwd(power:pwr, distance: to middle of side mat)//67"
+		}
+}
+		
+driverot(45)												//turn towards depot
+drivefwd(power:pwr, distance: to edge of depot + 2in)		//drive into depot
+setpower intake -1											//push out marker
+sleep(2000)													//marker is clear of intake
+setpower intake 0											//stop pushing
+driveback(power:pwr, distance: to edge of crater + 2in)		//drive back to crater		
+
+
+
+end
+
+-----------------
+definitions
+land()
+intakeext()
+intakerot()
+drivefwd()
+driveback()
+cv()
