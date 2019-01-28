@@ -61,7 +61,7 @@ public class SeriousHardware {
 
     //Virtual Hi-Low Speeds
     public static double MAX_SPEED = 1;
-    public static double MIN_SPEED = 0.4;
+    public static double MIN_SPEED = 0.2;
     public static double MOTOR_SPEED = 1;
 
     //Servo Positions
@@ -73,7 +73,7 @@ public class SeriousHardware {
     public static double HANG_CLOSED = 0;
     public static double HANG_OPEN = 0.7;
     public static double DUMP_CLOSED = 1;
-    public static double DUMP_OPEN = 0.5;
+    public static double DUMP_OPEN = 0.7;
     public static double PTO_Servo_Hang = 1;
     public static double PTO_Servo_Drive = 1;
 

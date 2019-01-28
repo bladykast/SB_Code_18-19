@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.SeriousHardware;
 
+
+import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.teamcode.SeriousHardware.DUMP_CLOSED;
 import static org.firstinspires.ftc.teamcode.SeriousHardware.DUMP_OPEN;
 import static org.firstinspires.ftc.teamcode.SeriousHardware.HANG_CLOSED;
@@ -21,6 +23,7 @@ import static org.firstinspires.ftc.teamcode.SeriousHardware.ROTL_UP;
 import static org.firstinspires.ftc.teamcode.SeriousHardware.ROTR_DOWN;
 import static org.firstinspires.ftc.teamcode.SeriousHardware.ROTR_UP;
 
+
 @TeleOp(name="3736 TeleOp", group="TeleOp")
 public class TeleOp_Comp extends OpMode {
 
@@ -28,8 +31,8 @@ public class TeleOp_Comp extends OpMode {
     public double PTOL_SPEED;
     public double PTOR_SPEED;
 
-    double HangPos;
-    double DumpPos;
+    double HangPos = HANG_CLOSED;
+    double DumpPos = DUMP_CLOSED;
     String IntakePos = "Up";
 
     public boolean slow = true;
@@ -42,6 +45,10 @@ public class TeleOp_Comp extends OpMode {
     public int armPositionInt;
 
     public double armPositionDelta;
+
+    boolean changedhang = false;
+    boolean changeddump = false;
+    boolean changedintake = false;
 
 
     SeriousHardware robot = new SeriousHardware();
@@ -76,6 +83,8 @@ public class TeleOp_Comp extends OpMode {
 
         PTO_Hang = true;
         PTO_Drive = false;
+
+
     }
 
     public void loop()
@@ -91,12 +100,6 @@ public class TeleOp_Comp extends OpMode {
         float y2 = -gamepad1.right_stick_y;
         float y3 = -gamepad2.left_stick_y;
         float y4 = -gamepad2.right_stick_y;
-
-        y1 = Range.clip(y1, -1, 1);
-        y2 = Range.clip(y2, -1, 1);
-        y3 = Range.clip(y3, -1, 1);
-        y4 = Range.clip(y4, -1, 1);
-
 
 
         //High-Low Speed Code
@@ -134,16 +137,16 @@ public class TeleOp_Comp extends OpMode {
 
 
         //Gamepad 1
-        if ((reverse == true) && (gamepad1.a)) { reverse = false; }
-        if ((reverse == false) && (gamepad1.a)) { reverse = true; }
+        if ((reverse == true) && (gamepad1.y)) { reverse = false; }
+        if ((reverse == false) && (gamepad1.b)) { reverse = true; }
 
-        if ((slow == true) && (gamepad1.x)) { slow = false; }
+        if ((slow == true) && (gamepad1.a)) { slow = false; }
         if ((slow == false) && (gamepad1.x)) { slow = true; }
 
         if (gamepad1.left_bumper) {
             robot.sweep.setPower(-1);
         } else if (gamepad1.right_bumper) {
-            robot.sweep.setPower(1);
+            robot.sweep.setPower(1 );
         } else {
             robot.sweep.setPower(0);
         }
@@ -161,28 +164,39 @@ public class TeleOp_Comp extends OpMode {
 
 
         //Gamepad 2
-        if ((HangPos == HANG_OPEN) && (gamepad2.x)) {HangPos = HANG_CLOSED;}
-        if ((HangPos == HANG_CLOSED) && (gamepad2.x)) {HangPos = HANG_OPEN;}
 
-        if ((DumpPos == DUMP_OPEN) && (gamepad2.a)) {DumpPos = DUMP_CLOSED;}
-        if ((DumpPos == DUMP_CLOSED) && (gamepad2.a)) {DumpPos = DUMP_OPEN;}
+        if(gamepad2.x && !changedhang) {
+            if(HangPos == HANG_OPEN) HangPos = HANG_CLOSED;
+            else HangPos = HANG_OPEN;
+            changedhang = true;
+        } else if(!gamepad2.x) changedhang = false;
 
-        if ((IntakePos == "Down") && (gamepad2.y)) {
+        if(gamepad2.a && !changeddump) {
+            if(DumpPos == DUMP_OPEN) DumpPos = DUMP_CLOSED;
+            else DumpPos = DUMP_OPEN;
+            changeddump = true;
+        } else if(!gamepad2.a) changeddump = false;
+
+        if(gamepad2.y && !changedintake) {
+            if(IntakePos == "Up") IntakePos = "Down";
+            else IntakePos = "Up";
+            changedintake = true;
+        } else if(!gamepad2.y) changedintake = false;
+
+        if (IntakePos == "Down") {
             robot.rotl.setPosition(ROTL_UP);
             robot.rotr.setPosition(ROTR_UP);
-            IntakePos = "Up";
         }
-        if ((IntakePos == "Up") && (gamepad2.y)) {
+        if (IntakePos == "Up") {
             robot.rotl.setPosition(ROTL_DOWN);
             robot.rotr.setPosition(ROTR_DOWN);
-            IntakePos = "Down";
         }
 
 
 
         //armPosition = Range.scale(gamepad2.right_trigger, 0, 1, 0, 5000);
 
-        armPositionDelta = y4 * 6;
+        armPositionDelta = y4 * 8;
         armPosition += armPositionDelta;
         armPositionInt = (int) armPosition;
 
@@ -194,10 +208,7 @@ public class TeleOp_Comp extends OpMode {
 
         telemetry.addData("Text", "*** Robot Data***");
         telemetry.addData("Motor Speed", "Speed:  " + String.format("%.2f", MOTOR_SPEED));
-        telemetry.addData("Arm Position", "Pos:  " + String.format("%d", armPositionInt));
         telemetry.addData("Actual Position", "Position:  " + String.format("%d", robot.RotateArm.getCurrentPosition()));
-        telemetry.addData("PTO Position", "Position:  " + String.format("%d", robot.PTORight.getCurrentPosition()));
-        telemetry.addData("PTO Position", "Position:  " + String.format("%d", robot.PTOLeft.getCurrentPosition()));
         telemetry.update();
     }
 

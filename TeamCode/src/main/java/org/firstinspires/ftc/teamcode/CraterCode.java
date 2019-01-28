@@ -54,9 +54,9 @@ import static org.firstinspires.ftc.teamcode.SeriousHardware.HANG_OPEN;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Red Crater", group = "Autonomous")
+@Autonomous(name = "Crater Code", group = "Autonomous")
 
-public class RedCrater extends LinearOpMode {
+public class CraterCode extends LinearOpMode {
 
     SeriousHardware robot = new SeriousHardware();
     private ElapsedTime runtime = new ElapsedTime();
@@ -127,11 +127,6 @@ public class RedCrater extends LinearOpMode {
 
         sleep(500);
 
-        ExtendArm(0.7);
-        sleep(10007);
-
-        RotateArm(700, 0.7);
-        sleep(1000);
 
 
 
@@ -211,7 +206,16 @@ public class RedCrater extends LinearOpMode {
         } else sleep(500);
 
         GoForward(1);
-        sleep(500);
+        sleep(900);
+
+        GoBackward(.2);
+        sleep(100);
+
+        ExtendArm(0.4);
+        sleep(100);
+
+        RotateArm(500, 0.4);
+        sleep(2000);
 
         Stop();
 
@@ -271,6 +275,144 @@ public class RedCrater extends LinearOpMode {
         robot.PTORight.setPower(1);
         sleep(3000);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     public void Stop() {
@@ -301,3 +443,4 @@ public class RedCrater extends LinearOpMode {
 
 //* Thomas oh my god fix the f&*$#%@ code
 //* Thomas and Logan you are doing a good job please keep trying you got this! :) also who ever threw that paper your mom is a hoe
+  
